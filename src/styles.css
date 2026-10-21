@@ -1,0 +1,148 @@
+/* Layout : colonne profil (CV + recherche) à gauche, offres classées à droite ; une colonne sur téléphone */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --fg: #16201d;
+  --muted: #5b6863;
+  --line: #d9e0dd;
+  --accent: #0f5e4f;
+  --accent-soft: #dcefe9;
+  --mark: #d9822b;
+  --good: #1f7a46;
+  --good-bg: #e2f3e8;
+  --mid: #9a6a00;
+  --mid-bg: #fbf0d4;
+  --low: #a33a32;
+  --low-bg: #f8e3e0;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111816; --surface: #18221f; --fg: #e5ece9; --muted: #95a39e; --line: #2b3a35;
+    --accent: #5fc4ac; --accent-soft: #1d3a33; --mark: #f0a456;
+    --good: #6fd39a; --good-bg: #173326; --mid: #e8c15c; --mid-bg: #352c12; --low: #f08b80; --low-bg: #3a1d1a;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 var(--f-body);
+  padding: 24px max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left));
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 24px }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px }
+h1 { font: 700 clamp(28px, 4vw, 40px)/1.05 var(--f-display); margin: 0; letter-spacing: -0.02em; text-wrap: balance }
+h1 span { color: var(--accent) }
+.sub { color: var(--muted); margin: 6px 0 0; max-width: 60ch }
+h2 { font: 700 19px/1.2 var(--f-display); margin: 0; text-wrap: balance }
+.label { font: 500 11px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.services { display: flex; gap: 6px; flex-wrap: wrap }
+.pill { font: 500 12px/1 var(--f-mono); padding: 6px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted) }
+.pill.on { color: var(--accent); border-color: var(--accent); background: var(--accent-soft) }
+
+.grid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 24px; align-items: start }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr) } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0 }
+.stack { display: grid; gap: 24px; min-width: 0 }
+.stack.tight { gap: 10px }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.row.between { justify-content: space-between }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+
+label.f { display: grid; gap: 5px; font-weight: 600; font-size: 14px }
+input[type=text], input[type=url], select, textarea {
+  font: inherit; font-size: 15px; color: var(--fg); background: var(--bg); border: 1px solid var(--line);
+  border-radius: 6px; padding: 8px 10px; width: 100%; min-width: 0;
+}
+textarea { resize: vertical; min-height: 90px; margin-top: 8px }
+label.f textarea { margin-top: 0 }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+
+button {
+  font: 600 14px/1 var(--f-body); border-radius: 6px; padding: 10px 14px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+}
+button:hover { border-color: var(--accent) }
+button.primary { background: var(--accent); color: var(--surface); border-color: var(--accent) }
+button.primary:hover { filter: brightness(1.08) }
+button.ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 6px 8px }
+button.ghost:hover { color: var(--fg) }
+button.danger { background: var(--low-bg); color: var(--low); border-color: var(--low) }
+button:disabled { opacity: .55; cursor: not-allowed }
+
+.drop { border: 1.5px dashed var(--line); border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; display: grid; gap: 4px; background: var(--bg) }
+.drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-soft) }
+.drop strong { font-family: var(--f-display); font-size: 16px }
+.drop small { color: var(--muted) }
+details summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--accent) }
+.status { font-size: 14px; color: var(--muted); min-height: 1.4em }
+.status.err { color: var(--low) }
+.note { font-size: 13px; color: var(--muted); margin: 0 }
+.note.center { align-self: center }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+.small { font-size: 12px }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px }
+.chip { font-size: 13px; padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent) }
+.chip.miss { background: var(--low-bg); color: var(--low) }
+.chip.ok { background: var(--good-bg); color: var(--good) }
+.profile-name { font: 700 17px/1.25 var(--f-display) }
+
+.queries { display: flex; flex-wrap: wrap; gap: 6px }
+.queries button { padding: 6px 10px; font-weight: 400; font-size: 13px }
+.queries button[aria-pressed=true] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600 }
+.links { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px }
+.links a {
+  display: flex; justify-content: space-between; gap: 6px; align-items: center; padding: 9px 11px;
+  border: 1px solid var(--line); border-radius: 6px; text-decoration: none; color: var(--fg);
+  font-weight: 600; font-size: 14px; background: var(--bg);
+}
+.links a:hover { border-color: var(--accent); color: var(--accent) }
+.links a span { font-family: var(--f-mono); color: var(--muted); font-size: 12px }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between }
+.toolbar label { font-size: 14px; color: var(--muted); display: flex; gap: 6px; align-items: center }
+.toolbar select { width: auto; padding: 6px 8px }
+input[type=range] { accent-color: var(--accent); width: 110px }
+.summary { display: flex; flex-wrap: wrap; gap: 18px; font-size: 14px; color: var(--muted) }
+.summary b { font: 500 20px/1 var(--f-mono); color: var(--fg); display: block; margin-bottom: 3px }
+
+.offers { display: grid; gap: 12px }
+.offer {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px;
+  display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px;
+}
+.offer.top { border-color: var(--good) }
+.ring {
+  width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font: 500 18px/1 var(--f-mono);
+  background: conic-gradient(var(--c) calc(var(--p) * 1%), var(--line) 0);
+}
+.ring i { width: 50px; height: 50px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-style: normal }
+.ring.none { --c: var(--line); --p: 0; color: var(--muted); font-size: 14px }
+.offer h3 { margin: 0; font: 700 17px/1.25 var(--f-display); text-wrap: balance }
+.offer-body { display: grid; gap: 8px; min-width: 0 }
+.meta { color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center }
+.verdict { font: 500 11px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 4px 7px; border-radius: 4px }
+.v-good { background: var(--good-bg); color: var(--good) }
+.v-mid { background: var(--mid-bg); color: var(--mid) }
+.v-low { background: var(--low-bg); color: var(--low) }
+.advice { font-size: 14px; border-left: 3px solid var(--mark); padding-left: 10px }
+.offer-actions { display: flex; flex-wrap: wrap; gap: 4px; align-items: start }
+.offer-actions a { font-size: 14px; color: var(--accent); font-weight: 600; padding: 6px 8px }
+.offer-actions details pre {
+  white-space: pre-wrap; font: 13px/1.5 var(--f-body); color: var(--muted); max-height: 220px; overflow: auto; margin: 8px 0 0;
+}
+.empty { text-align: center; color: var(--muted); padding: 32px 16px; border: 1.5px dashed var(--line); border-radius: 10px }
+
+@media (max-width: 480px) {
+  .two { grid-template-columns: 1fr }
+  .offer { grid-template-columns: 1fr }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .offer { animation: rise .25s ease both }
+  @keyframes rise { from { transform: translateY(4px) } }
+}
