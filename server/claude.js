@@ -1,6 +1,7 @@
 // Analyse du CV et notation des offres avec Claude.
 import Anthropic from "@anthropic-ai/sdk";
-import { z } from "zod";
+// Le helper zodOutputFormat du SDK attend des schémas Zod 4.
+import { z } from "zod/v4";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { verdictFor } from "./local.js";
 
