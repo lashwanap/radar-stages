@@ -46,6 +46,10 @@ npm run build
 npm start
 ```
 
+## Mise en ligne
+
+Le projet se déploie sur Render avec `render.yaml`. Le guide pas à pas, avec le branchement d'un domaine IONOS et les limites de coût, est dans [DEPLOIEMENT.md](DEPLOIEMENT.md).
+
 ## Tests
 
 ```bash
