@@ -32,4 +32,6 @@ export const Sparkle = (p) => (<Svg {...p}><path d="M12 3l1.8 5.2L19 10l-5.2 1.8
 export const Check = (p) => (<Svg {...p}><path d="m5 12.5 4.5 4.5L19 7.5" /></Svg>);
 export const Cross = (p) => (<Svg {...p}><path d="M6 6l12 12M18 6 6 18" /></Svg>);
 export const Chevron = (p) => (<Svg {...p}><path d="m6 9 6 6 6-6" /></Svg>);
-export const Bulb = (p) => (<Svg {...p}><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" /></Svg>);
+export const Sun = (p) => (<Svg {...p}><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></Svg>);
+export const Moon = (p) => (<Svg {...p}><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" /></Svg>);
+export const Bulb =(p) => (<Svg {...p}><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" /></Svg>);

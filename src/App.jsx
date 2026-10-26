@@ -6,6 +6,7 @@ import ProfileCard from "./components/ProfileCard.jsx";
 import SearchPanel from "./components/SearchPanel.jsx";
 import AddOfferDialog from "./components/AddOfferDialog.jsx";
 import OfferList from "./components/OfferList.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 
 const KEY = "radar-stages-v1";
 const EMPTY = {
@@ -102,12 +103,15 @@ export default function App() {
               <small>Recherche de stages guidée par votre CV</small>
             </div>
           </div>
-          {status.ready && (
-            <div className="services" aria-label="État des services">
-              <span className="service"><span className={`dot ${status.claude ? "on" : ""}`} />Analyse IA {status.claude ? "active" : "inactive"}</span>
-              <span className="service"><span className={`dot ${status.search ? "on" : ""}`} />Recherche d'offres {status.search ? "active" : "inactive"}</span>
-            </div>
-          )}
+          <div className="topbar-right">
+            {status.ready && (
+              <div className="services" aria-label="État des services">
+                <span className="service"><span className={`dot ${status.claude ? "on" : ""}`} />Analyse IA {status.claude ? "active" : "inactive"}</span>
+                <span className="service"><span className={`dot ${status.search ? "on" : ""}`} />Recherche d'offres {status.search ? "active" : "inactive"}</span>
+              </div>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

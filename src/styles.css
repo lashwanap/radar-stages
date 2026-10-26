@@ -23,8 +23,9 @@
   --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
   color-scheme: light;
 }
+/* Thème sombre : suit Windows par défaut ; data-theme="light" ou "dark" (bouton de la barre) l'impose. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #0d1314; --surface: #141c1e; --surface-2: #192325; --fg: #e6eeef; --muted: #9aa9ad; --faint: #6f7f83;
     --line: #243134; --line-strong: #314246; --accent: #3fb8a1; --accent-hover: #5cc8b3; --accent-soft: #15302b;
     --on-accent: #06201b;
@@ -32,6 +33,14 @@
     --shadow: 0 1px 2px rgb(0 0 0 / 40%); --shadow-lg: 0 16px 40px rgb(0 0 0 / 55%);
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1314; --surface: #141c1e; --surface-2: #192325; --fg: #e6eeef; --muted: #9aa9ad; --faint: #6f7f83;
+  --line: #243134; --line-strong: #314246; --accent: #3fb8a1; --accent-hover: #5cc8b3; --accent-soft: #15302b;
+  --on-accent: #06201b;
+  --good: #5fd395; --good-bg: #133023; --mid: #e9c060; --mid-bg: #33290f; --low: #f28b81; --low-bg: #381c19;
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%); --shadow-lg: 0 16px 40px rgb(0 0 0 / 55%);
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box }
@@ -53,6 +62,9 @@ p { margin: 0 }
 .brand small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); letter-spacing: 0 }
 .services { display: flex; gap: 16px; font-size: 13px; color: var(--muted) }
 .service { display: inline-flex; align-items: center; gap: 6px }
+.topbar-right { display: flex; align-items: center; gap: 16px }
+.theme-toggle { width: 36px; padding: 0; color: var(--muted) }
+.theme-toggle:hover { color: var(--fg) }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint) }
 .dot.on { background: var(--good); box-shadow: 0 0 0 3px var(--good-bg) }
 
@@ -91,6 +103,7 @@ p { margin: 0 }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; font: 500 14px/1 var(--f-sans);
   height: 36px; padding: 0 14px; border-radius: 7px; cursor: pointer; border: 1px solid var(--line-strong);
   background: var(--surface); color: var(--fg); white-space: nowrap; transition: background .15s, border-color .15s, color .15s }
+.btn svg { flex: none }
 .btn:hover { background: var(--surface-2); border-color: var(--faint) }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent) }
 .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover) }
