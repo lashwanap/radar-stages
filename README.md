@@ -25,7 +25,7 @@ Remplis ensuite `.env` :
 | Variable | À quoi elle sert | Où l'obtenir |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Analyse du CV et notation des offres par Claude | https://console.anthropic.com |
-| `JSEARCH_API_KEY` | Recherche automatique d'offres de stage (Canada, France, Belgique, Suisse) | https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch : abonne-toi au plan gratuit « Basic » et copie ta `X-RapidAPI-Key` |
+| `JSEARCH_API_KEY` | Recherche automatique d'offres de stage (Canada, France, Belgique, Suisse) | https://www.openwebninja.com/api/jsearch : crée un compte et copie ta clé API (`ak_…`) |
 
 Les deux sont facultatives. Sans clé Claude, la notation se fait par mots-clés. Sans clé JSearch, tu colles les annonces toi-même.
 

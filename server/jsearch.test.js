@@ -20,7 +20,7 @@ const realFetch = globalThis.fetch;
 const mockFetch = (pages) => {
   globalThis.fetch = async (url, opts) => {
     calls.push({ url: new URL(url), opts });
-    return new Response(JSON.stringify({ status: "OK", data: pages.shift() ?? [] }), { status: 200 });
+    return new Response(JSON.stringify({ status: "OK", data: { jobs: pages.shift() ?? [] } }), { status: 200 });
   };
 };
 
@@ -49,7 +49,8 @@ test("convertit une offre JSearch au format de l'app", async () => {
   assert.equal(url.searchParams.get("query"), "Stage développeur mobile Montréal");
   assert.equal(url.searchParams.get("country"), "ca");
   assert.equal(url.searchParams.get("employment_types"), "INTERN");
-  assert.equal(opts.headers["X-RapidAPI-Key"], "cle-de-test");
+  assert.equal(opts.headers["X-API-Key"], "cle-de-test");
+  assert.equal(url.origin + url.pathname, "https://api.openwebninja.com/jsearch/search-v2");
 });
 
 test("élargit la recherche quand aucun stage n'est trouvé", async () => {

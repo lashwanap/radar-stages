@@ -97,7 +97,7 @@ ${cv}
 ${JSON.stringify(list)}
 </offres>
 
-Pour chaque offre (même id) : score, forces (compétences du candidat qui correspondent, max 5), manques (ce qui manque, max 5), conseil (une phrase concrète pour postuler ou combler l'écart).`,
+Pour chaque offre (même id) : score, forces (compétences du candidat qui correspondent, max 5), manques (ce qui manque, max 5), conseil (une phrase concrète pour postuler ou combler l'écart, en tutoyant le candidat).`,
     ScoresSchema,
   );
   return offres.map((r) => {
