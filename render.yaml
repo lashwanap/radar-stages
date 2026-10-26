@@ -1,0 +1,23 @@
+# Déploiement sur Render (https://render.com) : New + → Blueprint, puis choisir ce dépôt.
+services:
+  - type: web
+    name: radar-stages
+    runtime: node
+    plan: free # passer à "starter" pour éviter la mise en veille après 15 min sans visite
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/status
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Clés secrètes : Render les demande à la création, elles ne sont jamais dans le dépôt.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: JSEARCH_API_KEY
+        sync: false
+      # Plafonds (voir server/limits.js) : ajustez selon votre budget.
+      - key: LIMIT_CLAUDE_CALLS_PER_DAY
+        value: "300"
+      - key: LIMIT_SEARCHES_PER_DAY
+        value: "20"

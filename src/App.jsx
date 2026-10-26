@@ -61,13 +61,16 @@ export default function App() {
     setState((s) => ({ ...s, offers: s.offers.map((o) => (ids.has(o.id) ? { ...o, pending: true } : o)) }));
     const { cvText, form } = stateRef.current;
     try {
-      const { scores, warning } = await api.scoreOffers(profile, cvText, form, offers);
-      const byId = new Map(scores.map((s) => [s.id, s]));
-      setState((s) => ({
-        ...s,
-        offers: s.offers.map((o) => (byId.has(o.id) ? { ...o, ...byId.get(o.id), pending: false } : o)),
-      }));
-      if (warning) notify(warning, "error");
+      // Le serveur accepte au plus 30 offres par demande.
+      for (let i = 0; i < offers.length; i += 30) {
+        const { scores, warning } = await api.scoreOffers(profile, cvText, form, offers.slice(i, i + 30));
+        const byId = new Map(scores.map((s) => [s.id, s]));
+        setState((s) => ({
+          ...s,
+          offers: s.offers.map((o) => (byId.has(o.id) ? { ...o, ...byId.get(o.id), pending: false } : o)),
+        }));
+        if (warning) notify(warning, "error");
+      }
     } catch (e) {
       setState((s) => ({ ...s, offers: s.offers.map((o) => (ids.has(o.id) ? { ...o, pending: false } : o)) }));
       notify(e.message, "error");

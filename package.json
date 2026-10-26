@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "description": "Trouve des stages et classe les offres selon ton CV.",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "concurrently -n api,web -c green,cyan \"node --watch server/index.js\" \"vite\"",
     "build": "vite build",
