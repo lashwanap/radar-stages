@@ -26,7 +26,7 @@ let uid = Date.now();
 
 export default function App() {
   const [state, setState] = useState(load);
-  const [status, setStatus] = useState({ claude: false, adzuna: false, ready: false });
+  const [status, setStatus] = useState({ claude: false, search: false, ready: false });
   const [note, setNote] = useState("");
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -97,7 +97,7 @@ export default function App() {
         {status.ready && (
           <div className="services">
             <span className={`pill ${status.claude ? "on" : ""}`}>Claude {status.claude ? "activé" : "désactivé"}</span>
-            <span className={`pill ${status.adzuna ? "on" : ""}`}>Recherche auto {status.adzuna ? "activée" : "désactivée"}</span>
+            <span className={`pill ${status.search ? "on" : ""}`}>Recherche auto {status.search ? "activée" : "désactivée"}</span>
           </div>
         )}
       </header>
@@ -112,7 +112,7 @@ export default function App() {
             onProfile={onProfile}
           />
           <ProfileCard profile={state.profile} />
-          <SearchPanel profile={state.profile} form={state.form} adzuna={status.adzuna} onFound={addOffers} />
+          <SearchPanel profile={state.profile} form={state.form} search={status.search} onFound={addOffers} />
         </div>
         <div className="stack">
           <AddOffer onAdd={addOffers} />

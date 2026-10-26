@@ -5,7 +5,7 @@ App web qui t'aide à trouver un stage : tu importes ton CV, l'app en tire ton p
 ## Ce que fait l'app
 
 1. **Lit ton CV** (PDF, DOCX ou texte) et en extrait compétences, langues, niveau d'études et intitulés de stage à chercher.
-2. **Cherche des offres** automatiquement via l'API Adzuna, ou t'ouvre Indeed, LinkedIn, Jobillico, Guichet-Emplois, Welcome to the Jungle, etc. avec la bonne recherche.
+2. **Cherche des offres** automatiquement via l'API JSearch (qui agrège Indeed, LinkedIn, Glassdoor… par Google Emplois), ou t'ouvre Indeed, LinkedIn, Jobillico, Guichet-Emplois, Welcome to the Jungle, etc. avec la bonne recherche.
 3. **Note chaque offre de 0 à 100** : compétences qui collent, compétences manquantes, et un conseil pour postuler.
 4. **Filtre et trie** par score minimum ou par date.
 
@@ -25,9 +25,11 @@ Remplis ensuite `.env` :
 | Variable | À quoi elle sert | Où l'obtenir |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Analyse du CV et notation des offres par Claude | https://console.anthropic.com |
-| `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | Recherche automatique d'offres (Canada, France, Belgique, Suisse) | https://developer.adzuna.com (gratuit) |
+| `JSEARCH_API_KEY` | Recherche automatique d'offres de stage (Canada, France, Belgique, Suisse) | https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch : abonne-toi au plan gratuit « Basic » et copie ta `X-RapidAPI-Key` |
 
-Les deux sont facultatives. Sans clé Claude, la notation se fait par mots-clés. Sans clés Adzuna, tu colles les annonces toi-même.
+Les deux sont facultatives. Sans clé Claude, la notation se fait par mots-clés. Sans clé JSearch, tu colles les annonces toi-même.
+
+La recherche demande d'abord les offres marquées « stage » ; s'il n'y en a aucune, elle élargit à toutes les offres du mois. Le plan gratuit de JSearch a un quota mensuel de requêtes.
 
 ## Lancer l'app
 
@@ -57,7 +59,7 @@ server/
   index.js    routes de l'API (Express)
   cv.js       lecture des PDF / DOCX
   claude.js   analyse du CV et notation avec Claude (claude-opus-5-5)
-  adzuna.js   recherche d'offres Adzuna
+  jsearch.js  recherche d'offres JSearch
   local.js    analyse et notation par mots-clés (sans Claude)
 src/
   App.jsx     état de l'app et sauvegarde locale

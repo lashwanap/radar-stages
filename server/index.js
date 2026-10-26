@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { extractText } from "./cv.js";
 import { localProfile, localScore } from "./local.js";
 import { claudeEnabled, claudeProfile, claudeScores } from "./claude.js";
-import { adzunaEnabled, searchAdzuna } from "./adzuna.js";
+import { jsearchEnabled, searchJSearch } from "./jsearch.js";
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
@@ -15,7 +15,7 @@ app.use(express.json({ limit: "2mb" }));
 const fail = (res, status, message) => res.status(status).json({ error: message });
 
 app.get("/api/status", (_req, res) => {
-  res.json({ claude: claudeEnabled(), adzuna: adzunaEnabled() });
+  res.json({ claude: claudeEnabled(), search: jsearchEnabled() });
 });
 
 app.post("/api/cv/extract", upload.single("cv"), async (req, res) => {
@@ -40,11 +40,11 @@ app.post("/api/cv/analyze", async (req, res) => {
 });
 
 app.get("/api/offers/search", async (req, res) => {
-  if (!adzunaEnabled()) return fail(res, 503, "Recherche automatique désactivée : ajoute tes clés Adzuna dans le fichier .env.");
+  if (!jsearchEnabled()) return fail(res, 503, "Recherche automatique désactivée : ajoute ta clé JSearch (JSEARCH_API_KEY) dans le fichier .env.");
   const { q, city = "", country = "ca" } = req.query;
   if (!q) return fail(res, 400, "Indique un intitulé à rechercher.");
   try {
-    res.json({ offers: await searchAdzuna({ q, city, country }) });
+    res.json({ offers: await searchJSearch({ q, city, country }) });
   } catch (e) {
     fail(res, 502, e.message);
   }
@@ -78,5 +78,5 @@ const port = Number(process.env.PORT) || 3001;
 app.listen(port, () => {
   console.log(`Radar à Stages : http://localhost:${port}`);
   console.log(`  Claude : ${claudeEnabled() ? "activé" : "désactivé (notation par mots-clés)"}`);
-  console.log(`  Adzuna : ${adzunaEnabled() ? "activé" : "désactivé (ajout manuel des offres)"}`);
+  console.log(`  JSearch : ${jsearchEnabled() ? "activé" : "désactivé (ajout manuel des offres)"}`);
 });

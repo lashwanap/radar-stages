@@ -2,7 +2,7 @@ import { useState } from "react";
 import { api } from "../api.js";
 import { searchLinks } from "../sites.js";
 
-export default function SearchPanel({ profile, form, adzuna, onFound }) {
+export default function SearchPanel({ profile, form, search, onFound }) {
   const queries = profile?.intitules?.length ? profile.intitules : [`Stage ${form.domain || "informatique"}`];
   const [current, setCurrent] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -39,10 +39,10 @@ export default function SearchPanel({ profile, form, adzuna, onFound }) {
           </button>
         ))}
       </div>
-      <button className="primary" onClick={autoSearch} disabled={busy || !adzuna} title={adzuna ? "" : "Ajoute tes clés Adzuna dans .env"}>
+      <button className="primary" onClick={autoSearch} disabled={busy || !search} title={search ? "" : "Ajoute ta clé JSearch dans .env"}>
         {busy ? "Recherche…" : "Trouver et noter les offres"}
       </button>
-      {!adzuna && <p className="note">Recherche automatique désactivée : ajoute tes clés Adzuna dans le fichier .env.</p>}
+      {!search && <p className="note">Recherche automatique désactivée : ajoute ta clé JSearch (JSEARCH_API_KEY) dans le fichier .env.</p>}
       <div className={`status ${msg.err ? "err" : ""}`} role="status">
         {msg.text}
       </div>
