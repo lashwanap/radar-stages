@@ -63,8 +63,8 @@ export function localScore(offer, profile, domain) {
     forces: forces.map(label),
     manques: manques.map(label).slice(0, 6),
     conseil: manques.length
-      ? `Mots-clés absents de ton CV : ${manques.slice(0, 3).join(", ")}.`
-      : "Les compétences demandées sont dans ton CV.",
+      ? `Mots-clés absents de votre CV : ${manques.slice(0, 3).join(", ")}.`
+      : "Les compétences demandées sont dans votre CV.",
     source: "local",
   };
 }

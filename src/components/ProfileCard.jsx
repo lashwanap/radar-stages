@@ -1,7 +1,10 @@
-export const Chips = ({ items, kind = "" }) => (
-  <div className="chips">
+import { Sparkle, FileText } from "./Icons.jsx";
+
+export const Tags = ({ items, kind = "", icon = null }) => (
+  <div className="tags">
     {items.map((t) => (
-      <span key={t} className={`chip ${kind}`}>
+      <span key={t} className={`tag ${kind}`}>
+        {icon}
         {t}
       </span>
     ))}
@@ -10,33 +13,44 @@ export const Chips = ({ items, kind = "" }) => (
 
 export default function ProfileCard({ profile }) {
   return (
-    <section className="panel" aria-labelledby="h-prof">
-      <div className="row between">
-        <h2 id="h-prof">Ton profil</h2>
-        {profile && <span className="label">{profile.source === "claude" ? "Analysé par Claude" : "Mots-clés"}</span>}
+    <section className="card" aria-labelledby="h-prof">
+      <div className="card-head">
+        <h2 className="card-title" id="h-prof"><span className="step">02</span>Profil détecté</h2>
+        {profile && (
+          <span className="source-badge">
+            <Sparkle size={13} />
+            {profile.source === "claude" ? "Analyse IA" : "Mots-clés"}
+          </span>
+        )}
       </div>
-      {!profile ? (
-        <p className="note">Ton profil apparaîtra ici après l'analyse du CV.</p>
-      ) : (
-        <div className="stack tight">
-          {profile.resume && <div className="profile-name">{profile.resume}</div>}
-          {profile.niveau && <div className="note">{profile.niveau}</div>}
-          {profile.competences.length ? (
-            <>
-              <span className="label">Compétences</span>
-              <Chips items={profile.competences} />
-            </>
-          ) : (
-            <p className="note">Aucune compétence reconnue. Précise ton domaine ou colle un CV plus détaillé.</p>
-          )}
-          {profile.langues?.length > 0 && (
-            <>
-              <span className="label">Langues</span>
-              <Chips items={profile.langues} />
-            </>
-          )}
-        </div>
-      )}
+      <div className="card-body">
+        {!profile ? (
+          <div className="empty-state">
+            <span className="icon-circle"><FileText size={20} /></span>
+            <strong>Aucun profil pour l'instant</strong>
+            <span>Importez votre CV puis lancez l'analyse pour voir vos compétences et les intitulés de stage suggérés.</span>
+          </div>
+        ) : (
+          <>
+            {profile.resume && <p className="profile-summary">{profile.resume}</p>}
+            {profile.niveau && <p className="profile-level">{profile.niveau}</p>}
+            <div className="field">
+              <span className="eyebrow">Compétences</span>
+              {profile.competences.length ? (
+                <Tags items={profile.competences} />
+              ) : (
+                <span className="hint">Aucune compétence reconnue. Précisez le domaine visé ou ajoutez du détail au CV.</span>
+              )}
+            </div>
+            {profile.langues?.length > 0 && (
+              <div className="field">
+                <span className="eyebrow">Langues</span>
+                <Tags items={profile.langues} />
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </section>
   );
 }

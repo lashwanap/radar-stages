@@ -12,7 +12,7 @@ async function query(params) {
   const res = await fetch(`${ENDPOINT}?${new URLSearchParams(params)}`, {
     headers: { "X-API-Key": process.env.JSEARCH_API_KEY },
   });
-  if (res.status === 401 || res.status === 403) throw new Error("JSearch refuse la clé. Vérifie JSEARCH_API_KEY dans le fichier .env.");
+  if (res.status === 401 || res.status === 403) throw new Error("JSearch refuse la clé. Vérifiez JSEARCH_API_KEY dans le fichier .env.");
   if (res.status === 429) throw new Error("Quota JSearch atteint pour ce mois-ci (ou trop de recherches d'affilée).");
   if (!res.ok) throw new Error(`JSearch a répondu ${res.status}.`);
   return (await res.json()).data?.jobs || [];

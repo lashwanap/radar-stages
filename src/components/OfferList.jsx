@@ -1,121 +1,212 @@
 import { useState } from "react";
-import { Chips } from "./ProfileCard.jsx";
+import { Tags } from "./ProfileCard.jsx";
+import { Building, Pin, Clock, External, Trash, Refresh, Search, Check, Cross, Bulb, Chevron, Radar, Plus } from "./Icons.jsx";
 
 const tone = (s) => (s >= 75 ? "good" : s >= 50 ? "mid" : "low");
+const FILTERS = [
+  [0, "Toutes"],
+  [50, "50 % et +"],
+  [75, "75 % et +"],
+];
 
-function Ring({ offer }) {
-  if (offer.pending) return <div className="ring none" title="Notation en cours"><i>…</i></div>;
-  if (offer.score == null) return <div className="ring none"><i>—</i></div>;
+function ago(offer) {
+  const t = offer.created ? Date.parse(offer.created) : offer.added;
+  if (!t) return "";
+  const days = Math.floor((Date.now() - t) / 86400000);
+  if (days <= 0) return "Aujourd'hui";
+  if (days === 1) return "Hier";
+  if (days < 30) return `Il y a ${days} jours`;
+  return `Il y a ${Math.floor(days / 30)} mois`;
+}
+
+function Score({ offer }) {
+  if (offer.pending) return <div className="score"><div className="score-pending" aria-label="Score en cours de calcul" /></div>;
+  if (offer.score == null) return <div className="score"><span className="verdict v-mid">Non évaluée</span></div>;
   return (
-    <div className="ring" style={{ "--c": `var(--${tone(offer.score)})`, "--p": offer.score }} aria-label={`Correspondance ${offer.score} %`}>
-      <i>{offer.score}</i>
+    <div className="score">
+      <div className="score-ring" style={{ "--c": `var(--${tone(offer.score)})`, "--p": offer.score }}>
+        <span aria-label={`Correspondance de ${offer.score} %`}>{offer.score}</span>
+      </div>
+      <span className={`verdict v-${tone(offer.score)}`}>{offer.verdict}</span>
     </div>
   );
 }
 
-function OfferCard({ offer, top, onRemove }) {
+function OfferCard({ offer, best, onRemove }) {
+  const [open, setOpen] = useState(false);
+  const initial = (offer.company || offer.title || "?").trim()[0].toUpperCase();
+  const hasMatch = offer.forces?.length || offer.manques?.length;
+
   return (
-    <article className={`offer ${top ? "top" : ""}`}>
-      <Ring offer={offer} />
-      <div className="offer-body">
-        <h3>{offer.title}</h3>
-        <div className="meta">
-          {offer.company && <span>{offer.company}</span>}
-          {offer.place && <span>{offer.place}</span>}
-          {offer.origin && <span className="mono small">{offer.origin}</span>}
-          {offer.pending ? (
-            <span>Notation en cours…</span>
-          ) : (
-            offer.verdict && <span className={`verdict v-${tone(offer.score)}`}>{offer.verdict}</span>
-          )}
+    <article className={`card offer ${best ? "best" : ""} ${open ? "open" : ""}`}>
+      <div className="avatar" aria-hidden="true">{initial}</div>
+      <div className="offer-main">
+        {best && <span className="best-label">Meilleure correspondance</span>}
+        <h3 className="offer-title">{offer.title}</h3>
+        <div className="offer-meta">
+          {offer.company && <span><Building size={14} />{offer.company}</span>}
+          {offer.place && <span><Pin size={14} />{offer.place}</span>}
+          {ago(offer) && <span><Clock size={14} />{ago(offer)}</span>}
+          {offer.origin && <span>{offer.origin}</span>}
         </div>
-        {offer.forces?.length > 0 && <Chips items={offer.forces.map((f) => `✓ ${f}`)} kind="ok" />}
-        {offer.manques?.length > 0 && <Chips items={offer.manques.map((f) => `✗ ${f}`)} kind="miss" />}
-        {offer.conseil && <div className="advice">{offer.conseil}</div>}
-        <div className="offer-actions">
+        {offer.pending ? (
+          <div style={{ display: "grid", gap: 6, maxWidth: 360 }}>
+            <span className="skeleton" />
+            <span className="skeleton" style={{ width: "70%" }} />
+          </div>
+        ) : (
+          offer.conseil && !open && <p className="muted" style={{ fontSize: 14 }}>{offer.conseil}</p>
+        )}
+      </div>
+      <Score offer={offer} />
+
+      {open && (
+        <div className="offer-detail">
+          {hasMatch ? (
+            <div className="match-grid">
+              <div>
+                <span className="eyebrow">Points forts</span>
+                {offer.forces?.length ? <Tags items={offer.forces} kind="ok" icon={<Check size={13} />} /> : <span className="hint">Aucun</span>}
+              </div>
+              <div>
+                <span className="eyebrow">À renforcer</span>
+                {offer.manques?.length ? <Tags items={offer.manques} kind="miss" icon={<Cross size={13} />} /> : <span className="hint">Rien à signaler</span>}
+              </div>
+            </div>
+          ) : null}
+          {offer.conseil && (
+            <div className="advice"><Bulb /><span>{offer.conseil}</span></div>
+          )}
           {offer.text && (
-            <details>
-              <summary>Voir l'annonce</summary>
-              <pre>{offer.text}</pre>
-            </details>
+            <div className="field">
+              <span className="eyebrow">Description de l'offre</span>
+              <div className="description">{offer.text}</div>
+            </div>
           )}
-          {/^https?:\/\//.test(offer.url || "") && (
-            <a href={offer.url} target="_blank" rel="noopener noreferrer">
-              Ouvrir l'annonce ↗
-            </a>
-          )}
-          <button className="ghost" type="button" onClick={() => onRemove(offer.id)}>
-            Retirer
-          </button>
         </div>
+      )}
+
+      <div className="offer-actions">
+        <button type="button" className="btn btn-sm" aria-expanded={open} onClick={() => setOpen(!open)}>
+          {open ? "Masquer le détail" : "Voir le détail"} <Chevron size={14} className="chev" />
+        </button>
+        {/^https?:\/\//.test(offer.url || "") && (
+          <a className="btn btn-sm btn-primary" href={offer.url} target="_blank" rel="noopener noreferrer">
+            Postuler <External size={13} />
+          </a>
+        )}
+        <span className="spacer" />
+        <button type="button" className="btn btn-ghost btn-sm" onClick={() => onRemove(offer.id)} aria-label={`Retirer ${offer.title}`}>
+          <Trash size={14} /> Retirer
+        </button>
       </div>
     </article>
   );
 }
 
-export default function OfferList({ offers, note, onRemove, onRescore, onClear }) {
+export default function OfferList({ offers, hasProfile, onRemove, onRescore, onClear, onAdd }) {
   const [min, setMin] = useState(0);
   const [sort, setSort] = useState("score");
+  const [text, setText] = useState("");
   const [confirmClear, setConfirmClear] = useState(false);
 
   const scored = offers.filter((o) => o.score != null);
+  const pending = offers.filter((o) => o.pending).length;
+  const needle = text.trim().toLowerCase();
   const shown = offers
     .filter((o) => o.pending || o.score == null || o.score >= min)
+    .filter((o) => !needle || `${o.title} ${o.company} ${o.place}`.toLowerCase().includes(needle))
     .sort((a, b) => (sort === "recent" ? b.added - a.added : (b.score ?? -1) - (a.score ?? -1)));
-  const best = Math.max(0, ...scored.map((o) => o.score));
+  const best = scored.length ? Math.max(...scored.map((o) => o.score)) : 0;
   const avg = scored.length ? Math.round(scored.reduce((s, o) => s + o.score, 0) / scored.length) : null;
+  const strong = scored.filter((o) => o.score >= 75).length;
 
   return (
-    <section className="panel" aria-labelledby="h-list">
-      <div className="toolbar">
-        <h2 id="h-list">Offres classées</h2>
-        <div className="row">
-          <label>
-            Score min <input type="range" min="0" max="90" step="5" value={min} onChange={(e) => setMin(+e.target.value)} />
-            <span className="mono">{min}</span>
-          </label>
-          <label>
-            Tri
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="score">Meilleur match</option>
-              <option value="recent">Plus récentes</option>
-            </select>
-          </label>
-          <button type="button" onClick={onRescore} disabled={!offers.length}>
-            Re-noter tout
-          </button>
-          {offers.length > 0 &&
-            (confirmClear ? (
-              <>
-                <button type="button" className="danger" onClick={() => (onClear(), setConfirmClear(false))}>
-                  Oui, tout retirer
-                </button>
-                <button type="button" className="ghost" onClick={() => setConfirmClear(false)}>
-                  Annuler
-                </button>
-              </>
-            ) : (
-              <button type="button" className="ghost" onClick={() => setConfirmClear(true)}>
-                Tout retirer
-              </button>
-            ))}
+    <>
+      <div className="stats">
+        <div className="card stat">
+          <span className="stat-label">Offres suivies</span>
+          <span className="stat-value">{offers.length}</span>
+        </div>
+        <div className="card stat">
+          <span className="stat-label">Très bonnes correspondances</span>
+          <span className="stat-value">{strong}</span>
+        </div>
+        <div className="card stat">
+          <span className="stat-label">Score moyen</span>
+          <span className="stat-value">{avg == null ? "—" : `${avg} %`}</span>
+          <span className="stat-bar"><span style={{ width: `${avg ?? 0}%` }} /></span>
+        </div>
+        <div className="card stat">
+          <span className="stat-label">Meilleur score</span>
+          <span className="stat-value">{scored.length ? `${best} %` : "—"}</span>
+          <span className="stat-bar"><span style={{ width: `${best}%` }} /></span>
         </div>
       </div>
-      <div className="summary">
-        <div><b>{offers.length}</b>offres</div>
-        <div><b>{scored.filter((o) => o.score >= 75).length}</b>excellents matchs</div>
-        <div><b>{avg == null ? "—" : `${avg}%`}</b>match moyen</div>
-        {note && <div className="note center">{note}</div>}
-      </div>
+
+      <section className="card" aria-labelledby="h-list">
+        <h2 id="h-list" className="sr-only">Offres classées</h2>
+        <div className="toolbar">
+          <div className="toolbar-left">
+            <label className="search-input">
+              <Search size={15} />
+              <span className="sr-only">Filtrer les offres</span>
+              <input className="input" type="search" value={text} onChange={(e) => setText(e.target.value)} placeholder="Filtrer par intitulé, entreprise…" />
+            </label>
+            <div className="segmented" role="group" aria-label="Score minimum">
+              {FILTERS.map(([v, label]) => (
+                <button key={v} type="button" aria-pressed={min === v} onClick={() => setMin(v)}>{label}</button>
+              ))}
+            </div>
+          </div>
+          <div className="toolbar-right">
+            <label>
+              <span className="sr-only">Trier</span>
+              <select className="select" value={sort} onChange={(e) => setSort(e.target.value)}>
+                <option value="score">Trier par score</option>
+                <option value="recent">Trier par date d'ajout</option>
+              </select>
+            </label>
+            <button type="button" className="btn btn-sm" onClick={onRescore} disabled={!offers.length || !hasProfile || pending > 0}
+              title={hasProfile ? undefined : "Analysez d'abord votre CV"}>
+              <Refresh size={14} /> Recalculer
+            </button>
+            {offers.length > 0 &&
+              (confirmClear ? (
+                <>
+                  <button type="button" className="btn btn-sm btn-danger" onClick={() => (onClear(), setConfirmClear(false))}>Confirmer</button>
+                  <button type="button" className="btn btn-sm btn-ghost" onClick={() => setConfirmClear(false)}>Annuler</button>
+                </>
+              ) : (
+                <button type="button" className="btn btn-sm btn-ghost" onClick={() => setConfirmClear(true)}>
+                  <Trash size={14} /> Tout retirer
+                </button>
+              ))}
+          </div>
+        </div>
+      </section>
+
+      {!hasProfile && offers.some((o) => o.score == null) && (
+        <div className="banner">Analysez votre CV pour obtenir le score de chaque offre.</div>
+      )}
+
       <div className="offers">
         {!offers.length ? (
-          <div className="empty">Aucune offre pour l'instant. Lance une recherche à l'étape 2 ou colle une annonce à l'étape 3.</div>
+          <div className="card empty-state">
+            <span className="icon-circle"><Radar size={22} /></span>
+            <strong>Aucune offre pour l'instant</strong>
+            <span>Lancez une recherche ou ajoutez une annonce trouvée sur un site d'emploi.</span>
+            <button className="btn" type="button" onClick={onAdd}><Plus /> Ajouter une offre</button>
+          </div>
         ) : !shown.length ? (
-          <div className="empty">Aucune offre au-dessus de {min} %. Baisse le score minimum.</div>
+          <div className="card empty-state">
+            <strong>Aucune offre ne correspond à ces filtres</strong>
+            <span>Élargissez le score minimum ou modifiez votre filtre.</span>
+          </div>
         ) : (
-          shown.map((o) => <OfferCard key={o.id} offer={o} top={best >= 75 && o.score === best} onRemove={onRemove} />)
+          shown.map((o) => <OfferCard key={o.id} offer={o} best={best >= 75 && o.score === best} onRemove={onRemove} />)
         )}
       </div>
-    </section>
+    </>
   );
 }

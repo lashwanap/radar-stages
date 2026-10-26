@@ -40,9 +40,9 @@ app.post("/api/cv/analyze", async (req, res) => {
 });
 
 app.get("/api/offers/search", async (req, res) => {
-  if (!jsearchEnabled()) return fail(res, 503, "Recherche automatique désactivée : ajoute ta clé JSearch (JSEARCH_API_KEY) dans le fichier .env.");
+  if (!jsearchEnabled()) return fail(res, 503, "Recherche automatique désactivée : ajoutez votre clé JSearch (JSEARCH_API_KEY) dans le fichier .env.");
   const { q, city = "", country = "ca" } = req.query;
-  if (!q) return fail(res, 400, "Indique un intitulé à rechercher.");
+  if (!q) return fail(res, 400, "Indiquez un intitulé à rechercher.");
   try {
     res.json({ offers: await searchJSearch({ q, city, country }) });
   } catch (e) {
@@ -52,7 +52,7 @@ app.get("/api/offers/search", async (req, res) => {
 
 app.post("/api/offers/score", async (req, res) => {
   const { profile, cv = "", form = {}, offers = [] } = req.body;
-  if (!profile) return fail(res, 400, "Analyse ton CV avant de noter les offres.");
+  if (!profile) return fail(res, 400, "Analysez votre CV avant de noter les offres.");
   const local = () => offers.map((o) => ({ id: o.id, ...localScore(o, profile, form.domain) }));
   if (!claudeEnabled() || !offers.length) return res.json({ scores: local() });
   try {
