@@ -134,12 +134,12 @@ export default function OfferList({ offers, hasProfile, onRemove, onRescore, onC
         </div>
         <div className="card stat">
           <span className="stat-label">Score moyen</span>
-          <span className="stat-value">{avg == null ? "—" : `${avg} %`}</span>
+          <span className="stat-value">{avg == null ? "—" : `${avg} %`}</span>
           <span className="stat-bar"><span style={{ width: `${avg ?? 0}%` }} /></span>
         </div>
         <div className="card stat">
           <span className="stat-label">Meilleur score</span>
-          <span className="stat-value">{scored.length ? `${best} %` : "—"}</span>
+          <span className="stat-value">{scored.length ? `${best} %` : "—"}</span>
           <span className="stat-bar"><span style={{ width: `${best}%` }} /></span>
         </div>
       </div>
